@@ -16,12 +16,25 @@ function doCronLogic ($input) {
 }
 
 function doLogic ($input) {
-  //@TODO implement bot logic here
   $text = $input['message']['text'];
   $chatId = $input['message']['chat']['id'];
 
+  if ($text == '/start') {
+    return [[
+      'text' => START_MESSAGE,
+      'chat_id' => $chatId
+    ], null];
+  }
+
+  if ($text == '/add') {
+    return [[
+      'text' => 'Now please send me the photo of the QR code you want to add',
+      'chat_id' => $chatId
+    ], null];    
+  }
+
   return [
-    'text' => 'text',
+    'text' => $text,
     'chat_id' => $chatId
   ];
 }

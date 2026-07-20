@@ -8,3 +8,4 @@ define('WORKER_CACHE_PATH', '/var/cache/' . BOT_NAME);
 define('WORKER_LOG_PATH', '/var/log/' . BOT_NAME);
 define('MAX_RETRIES', 3);
 define('REQUEST_TIMEOUT', 8);
+define('START_MESSAGE', "Hello!\nThis is TinyOTP, I can handle your OTP codes inside Telegram");
