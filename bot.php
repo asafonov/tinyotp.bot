@@ -33,6 +33,17 @@ function doLogic ($input) {
     ], null];    
   }
 
+  if (isMessageWithPhoto($input)) {
+    $photoUrl = getPhotoUrl($input);
+    $savePath = WORKER_CACHE_PATH . '/' . basename($photoUrl);
+    file_put_contents($savePath, file_get_contents($photoUrl));
+
+    return [[
+      'text' => 'Got the photo',
+      'chat_id' => $chatId
+    ], null];    
+  }
+
   return [
     'text' => $text,
     'chat_id' => $chatId
