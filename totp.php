@@ -50,8 +50,8 @@ function parse_totp_url ($url) {
   $path = explode(":", substr($parsed_url['path'], 1));
   parse_str($parsed_url['query'], $params);
   return [
-    'username' => $path[0],
-    'provider' => $path[1],
+    'username' => $path[1],
+    'provider' => $path[0],
     'secret' => $params['secret'],
     'issuer' => $params['issuer']
   ];
