@@ -48,7 +48,7 @@ function doLogic ($input) {
   if ($text == '/list') {
     $dir = WORKER_CACHE_PATH . '/' . $chatId . '/secrets';
     $keyboard = [];
-    $files = scandir($workingDir);
+    $files = scandir($dir);
 
     for ($i = 0, $j = count($files); $i < $j; ++$i) {
       if ($files[$i] === '.' || $files[$i] === '..') {
