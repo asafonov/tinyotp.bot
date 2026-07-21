@@ -35,8 +35,9 @@ function doLogic ($input) {
 
   if (isMessageWithPhoto($input)) {
     $photoUrl = getPhotoUrl($input);
-    $savePath = WORKER_CACHE_PATH . '/' . basename($photoUrl);
-    file_put_contents($savePath, file_get_contents($photoUrl));
+    $savePath = WORKER_CACHE_PATH . '/' . $chatId;
+    mkdir($savePath);
+    file_put_contents($savePath . '/' . basename($photoUrl), file_get_contents($photoUrl));
 
     return [[
       'text' => 'Got the photo',
