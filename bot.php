@@ -47,13 +47,17 @@ function doLogic ($input) {
 
   if (isMessageWithPhoto($input)) {
     $photoUrl = getPhotoUrl($input);
-    $savePath = WORKER_CACHE_PATH . '/' . $chatId;
-    mkdir($savePath);
-    $savePath .= '/' . basename($photoUrl);
+    $saveDir = WORKER_CACHE_PATH . '/' . $chatId;
+    @mkdir($saveDir);
+    $savePath = $saveDir . '/' . basename($photoUrl);
     file_put_contents($savePath, requestApiWithRetry($photoUrl));
     $url = parseQR($savePath);
     $parsed = parse_totp_url($url);
     $otp = generate_totp($parsed['secret']);
+    $secretsDir = $saveDir . '/secrets'
+    @mkdir($secretsDir);
+    $key = "{$parsed['username']}:{$parsed['provider']}";
+    file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
 
     return [
       'text' => 'Your confirmation code is ' . $otp,
