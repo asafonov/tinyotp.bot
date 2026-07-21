@@ -45,6 +45,21 @@ function generate_totp ($secret_b32, $time_step = 30, $digits = 6) {
   return str_pad($code, $digits, '0', STR_PAD_LEFT);
 }
 
+function parse_totp_url ($url) {
+  $parsed_url = parse_url($url);
+  $path = explode(":", substr($parsed_url['path'], 1));
+  parse_str($parsed_url['query'], $params);
+  return [
+    'username' => $path[0],
+    'provider' => $path[1],
+    'secret' => $params['secret'],
+    'issuer' => $params['issuer']
+  ];
+}
+
 function test() {
-  return generate_totp('JBSWY3DPEHPK3PXP');
+  $url = "otpauth://totp/user:provider?secret=JBSWY3DPEHPK3PXP&issuer=issuer";
+  $parsed = parse_totp_url($url);
+  print_r($parsed);
+  return generate_totp($parsed['secret']);
 }
