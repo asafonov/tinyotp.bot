@@ -49,7 +49,7 @@ function doLogic ($input) {
     $photoUrl = getPhotoUrl($input);
     $savePath = WORKER_CACHE_PATH . '/' . $chatId;
     mkdir($savePath);
-    $savePath .= '/' . basename($photoUrl)
+    $savePath .= '/' . basename($photoUrl);
     file_put_contents($savePath, file_get_contents($photoUrl));
     $url = parseQR($savePath);
     $parsed = parse_totp_url($url);
