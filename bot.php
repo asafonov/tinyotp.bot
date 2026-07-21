@@ -21,7 +21,7 @@ function parseQR ($filename) {
   exec($command, $output, $returnCode);
 
   if ($returnCode === 0 && ! empty($output)) {
-    return $output;
+    return $output[0];
   }
 
   return null;
