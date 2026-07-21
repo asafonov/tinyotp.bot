@@ -27,6 +27,19 @@ function requestApi ($url, $msg = false) {
   return file_get_contents($url, false, $context);
 }
 
+function getFileWithRetry ($url) {
+  $try = 0;
+
+  while ($try < MAX_RETRIES) {
+    try {
+      $ret = requestApi($url);
+      return $ret;
+    } catch (Exception $e) {
+      ++$try;
+    }
+  }
+}
+
 function requestApiWithRetry ($url, $msg = false) {
   $try = 0;
 
