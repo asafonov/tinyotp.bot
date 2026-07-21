@@ -2,6 +2,7 @@
 
 require_once('config.php');
 require_once('message.php');
+require_once('totp.php');
 
 function doCronLogic ($input) {
   //@TODO implement cron logic here, if needed
@@ -15,38 +16,53 @@ function doCronLogic ($input) {
 
 }
 
+function parseQR ($filename) {
+  $command = "zbarimg --raw " . escapeshellarg($filename);
+  exec($command, $output, $returnCode);
+
+  if ($returnCode === 0 && ! empty($output)) {
+    return $output;
+  }
+
+  return null;
+}
+
 function doLogic ($input) {
   $text = $input['message']['text'];
   $chatId = $input['message']['chat']['id'];
 
   if ($text == '/start') {
-    return [[
+    return [
       'text' => START_MESSAGE,
       'chat_id' => $chatId
-    ], null];
+    ];
   }
 
   if ($text == '/add') {
-    return [[
+    return [
       'text' => 'Now please send me the photo of the QR code you want to add',
       'chat_id' => $chatId
-    ], null];    
+    ];    
   }
 
   if (isMessageWithPhoto($input)) {
     $photoUrl = getPhotoUrl($input);
     $savePath = WORKER_CACHE_PATH . '/' . $chatId;
     mkdir($savePath);
-    file_put_contents($savePath . '/' . basename($photoUrl), file_get_contents($photoUrl));
+    $savePath .= '/' . basename($photoUrl)
+    file_put_contents($savePath, file_get_contents($photoUrl));
+    $url = parseQR($savePath);
+    $parsed = parse_totp_url($url);
+    $otp = generate_totp($parsed['secret']);
 
-    return [[
-      'text' => 'Got the photo',
+    return [
+      'text' => 'Your confirmation code is ' . $otp,
       'chat_id' => $chatId
-    ], null];    
+    ];    
   }
 
   return [
-    'text' => $text,
+    'text' => 'Sorry, I didn\'t get that',
     'chat_id' => $chatId
   ];
 }
