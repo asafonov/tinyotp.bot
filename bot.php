@@ -50,7 +50,7 @@ function doLogic ($input) {
     $savePath = WORKER_CACHE_PATH . '/' . $chatId;
     mkdir($savePath);
     $savePath .= '/' . basename($photoUrl);
-    file_put_contents($savePath, file_get_contents($photoUrl));
+    file_put_contents($savePath, requestApiWithRetry($photoUrl));
     $url = parseQR($savePath);
     $parsed = parse_totp_url($url);
     $otp = generate_totp($parsed['secret']);
