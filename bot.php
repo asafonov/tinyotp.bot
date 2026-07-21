@@ -45,6 +45,28 @@ function doLogic ($input) {
     ];    
   }
 
+  if ($text == '/list') {
+    $dir = WORKER_CACHE_PATH . '/' . $chatId . '/secrets';
+    $keyboard = [];
+    $files = scandir($workingDir);
+
+    for ($i = 0, $j = count($files); $i < $j; ++$i) {
+      if ($files[$i] === '.' || $files[$i] === '..') {
+        continue;
+      }
+
+      $keyboard[] = ['text' => $files[$i], 'callback_data' => $files[$i]];
+    }
+
+    $reply_markup = json_encode(['inline_keyboard' => [$keyboard]]);
+
+    return [
+      'text' => 'Here is the list of you TOTPs',
+      'chat_id' => $chatId,
+      'reply_markup' => $reply_markup
+    ];    
+  }
+
   if (isMessageWithPhoto($input)) {
     $photoUrl = getPhotoUrl($input);
     $saveDir = WORKER_CACHE_PATH . '/' . $chatId;
