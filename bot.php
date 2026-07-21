@@ -54,7 +54,7 @@ function doLogic ($input) {
     $url = parseQR($savePath);
     $parsed = parse_totp_url($url);
     $otp = generate_totp($parsed['secret']);
-    $secretsDir = $saveDir . '/secrets'
+    $secretsDir = $saveDir . '/secrets';
     mkdir($secretsDir);
     $key = "{$parsed['username']}:{$parsed['provider']}";
     file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
