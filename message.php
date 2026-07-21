@@ -90,3 +90,25 @@ function getPhotoUrl ($msg) {
 
   return 'https://api.telegram.org/file/bot' . TOKEN . "/{$filePath['result']['file_path']}";
 }
+
+function isCallbackQuery ($input) {
+  return ! empty($input['callback_query']);
+}
+
+function getCallbackQueryData ($input) {
+  return [
+    'id' => $input['callback_query']['id'],
+    'data' => $input['callback_query']['data'],
+    'chat_id' => $input['callback_query']['message']['chat']['id']
+  ];
+}
+
+function replyCallback ($id, $text) {
+  $url = 'https://api.telegram.org/bot' . TOKEN . '/answerCallbackQuery';
+  $msg = [
+    'callback_query_id' => $id,
+    'text' => $text
+  ];
+
+  requestApiWithRetry($url, $msg);
+}
