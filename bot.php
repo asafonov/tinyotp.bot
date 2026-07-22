@@ -70,7 +70,7 @@ function doLogic ($input) {
   if (isCallbackQuery($input)) {
     $query = getCallbackQueryData($input);
     $filename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/secrets/' . $query['data'];
-    $data = json_decode(file_get_contents($filename));
+    $data = json_decode(file_get_contents($filename), true);
     $otp = generate_totp($data['secret']);
 
     return [
