@@ -55,10 +55,10 @@ function doLogic ($input) {
         continue;
       }
 
-      $keyboard[] = ['text' => $files[$i], 'callback_data' => $files[$i]];
+      $keyboard[] = [['text' => $files[$i], 'callback_data' => $files[$i]]];
     }
 
-    $reply_markup = json_encode(['inline_keyboard' => [$keyboard]]);
+    $reply_markup = json_encode(['inline_keyboard' => $keyboard]);
 
     return [
       'text' => 'Here is the list of you TOTPs',
