@@ -42,7 +42,7 @@ function doLogic ($input) {
     return [
       'text' => 'Now please send me the photo of the QR code you want to add',
       'chat_id' => $chatId
-    ];    
+    ];
   }
 
   if ($text == '/list') {
@@ -64,7 +64,19 @@ function doLogic ($input) {
       'text' => 'Here is the list of you TOTPs',
       'chat_id' => $chatId,
       'reply_markup' => $reply_markup
-    ];    
+    ];
+  }
+
+  if (isCallbackQuery($input)) {
+    $query = getCallbackQueryData($input);
+    $filename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/secrets/' . $query['data'];
+    $data = json_decode(file_get_contents($filename));
+    $otp = generate_totp($data['secret']);
+
+    return [
+      'text' => 'Your confirmation code is ' . $otp,
+      'chat_id' => $query['chat_id']
+    ];
   }
 
   if (isMessageWithPhoto($input)) {
@@ -84,7 +96,7 @@ function doLogic ($input) {
     return [
       'text' => 'Your confirmation code is ' . $otp,
       'chat_id' => $chatId
-    ];    
+    ];
   }
 
   return [
