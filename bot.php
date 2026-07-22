@@ -78,7 +78,7 @@ function doLogic ($input) {
     $otp = generate_totp($parsed['secret']);
     $secretsDir = $saveDir . '/secrets';
     mkdir($secretsDir);
-    $key = "{$parsed['username']}:{$parsed['provider']}";
+    $key = "{$parsed['provider']}:{$parsed['username']}";
     file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
 
     return [
