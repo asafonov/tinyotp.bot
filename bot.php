@@ -74,7 +74,7 @@ function doLogic ($input) {
     $otp = generate_totp($data['secret']);
 
     return [
-      'text' => 'Your confirmation code is ' . $otp,
+      'text' => 'Your OTP is ' . $otp,
       'chat_id' => $query['chat_id']
     ];
   }
