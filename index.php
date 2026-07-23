@@ -1,6 +1,7 @@
 <?php
 
 require_once('config.php');
+require_once('message.php');
 
 try {
   $input = file_get_contents('php://input');
