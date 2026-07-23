@@ -87,16 +87,19 @@ function doLogic ($input) {
     file_put_contents($savePath, getFileWithRetry($photoUrl));
     $url = parseQR($savePath);
     $parsed = parse_totp_url($url);
-    $otp = generate_totp($parsed['secret']);
-    $secretsDir = $saveDir . '/secrets';
-    mkdir($secretsDir);
-    $key = "{$parsed['provider']}:{$parsed['username']}";
-    file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
 
-    return [
-      'text' => 'Your confirmation code is ' . $otp,
-      'chat_id' => $chatId
-    ];
+    if (isset($parsed['secret']) && $parsed['secret']) {
+      $otp = generate_totp($parsed['secret']);
+      $secretsDir = $saveDir . '/secrets';
+      mkdir($secretsDir);
+      $key = "{$parsed['provider']}:{$parsed['username']}";
+      file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
+
+      return [
+        'text' => 'Your confirmation code is ' . $otp,
+        'chat_id' => $chatId
+      ];
+    }
   }
 
   return [
