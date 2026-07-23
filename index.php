@@ -9,6 +9,11 @@ try {
   $chatId = isset($data['message']['chat']['id']) ? $data['message']['chat']['id'] : null;
   $hasMessage = isset($data['message']['text']) || isset($data['message']['photo']);
 
+  if (isCallbackQuery($data)) {
+    $hasMessage = true;
+    $chatId = getCallbackQueryData($data)['chat_id'];
+  }
+
   if ($hasMessage && $chatId) {
     $jobId = uniqid();
     file_put_contents(WORKER_CACHE_PATH . "/$jobId", $input);
