@@ -1,6 +1,7 @@
 <?php
 
 require_once('config.php');
+require_once('message.php');
 require_once('bot.php');
 
 if (isset($argv[1]) && file_exists(WORKER_CACHE_PATH . '/' . $argv[1])) {
