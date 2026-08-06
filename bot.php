@@ -67,6 +67,20 @@ function doLogic ($input) {
     ];
   }
 
+  if ($text && $chatId) {
+    $filename = WORKER_CACHE_PATH . '/' . $chatId . '/secrets/' . $text;
+
+    if (file_exists($filename)) {
+      $data = json_decode(file_get_contents($filename), true);
+      $otp = generate_totp($data['secret']);
+
+      return [
+        'text' => 'Your OTP is ' . $otp,
+        'chat_id' => $chatId
+      ];
+    }
+  }
+
   if (isCallbackQuery($input)) {
     $query = getCallbackQueryData($input);
     $filename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/secrets/' . $query['data'];
