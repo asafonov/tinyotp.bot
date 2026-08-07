@@ -56,3 +56,7 @@ function parse_totp_url ($url) {
     'issuer' => $params['issuer']
   ];
 }
+
+function generate_url ($data) {
+  return "otpauth://totp/{$data['provider']}{$data['username'] ? ':' . $data['username'] : ''}?secret={$data['secret']}&issuer={$data['issuer']}";
+}

@@ -27,6 +27,30 @@ function parseQR ($filename) {
   return null;
 }
 
+function getListKeyboardMarkup ($chatId) {
+  $dir = WORKER_CACHE_PATH . '/' . $chatId . '/secrets';
+  $keyboard = [];
+  $files = scandir($dir);
+
+  for ($i = 0, $j = count($files); $i < $j; ++$i) {
+    if ($files[$i] === '.' || $files[$i] === '..') {
+      continue;
+    }
+
+    $keyboard[] = [['text' => $files[$i], 'callback_data' => $files[$i]]];
+  }
+
+  return json_encode(['inline_keyboard' => $keyboard]);
+}
+
+function saveLastCommand ($command, $chatId) {
+  file_put_contents(WORKER_CACHE_PATH . '/' . $chatId . '/last_command', $command);
+}
+
+function getLastCommand ($chatId) {
+  return file_get_contents(WORKER_CACHE_PATH . '/' . $chatId . '/last_command');
+}
+
 function doLogic ($input) {
   $text = $input['message']['text'];
   $chatId = $input['message']['chat']['id'];
@@ -45,27 +69,21 @@ function doLogic ($input) {
     ];
   }
 
-  if ($text == '/list') {
-    $dir = WORKER_CACHE_PATH . '/' . $chatId . '/secrets';
-    $keyboard = [];
-    $files = scandir($dir);
-
-    for ($i = 0, $j = count($files); $i < $j; ++$i) {
-      if ($files[$i] === '.' || $files[$i] === '..') {
-        continue;
-      }
-
-      $keyboard[] = [['text' => $files[$i], 'callback_data' => $files[$i]]];
-    }
-
-    $reply_markup = json_encode(['inline_keyboard' => $keyboard]);
+  if ($text == '/list' || $text == '/export') {
+    saveLastCommand($text, $chatId);
+    $reply_markup = getListKeyboardMarkup($chatId);
+    $reply = [
+      '/list' => 'Here is the list of your OTP providers',
+      '/export' => 'Select the provider to export'
+    ];
 
     return [
-      'text' => 'Here is the list of you TOTPs',
+      'text' => $reply[$text],
       'chat_id' => $chatId,
       'reply_markup' => $reply_markup
     ];
   }
+
 
   if ($text && $chatId) {
     $filename = WORKER_CACHE_PATH . '/' . $chatId . '/secrets/' . $text;
@@ -85,12 +103,23 @@ function doLogic ($input) {
     $query = getCallbackQueryData($input);
     $filename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/secrets/' . $query['data'];
     $data = json_decode(file_get_contents($filename), true);
-    $otp = generate_totp($data['secret']);
+    $lastCommand = getLastCommand($query['chat_id']);
 
-    return [
-      'text' => 'Your OTP is ' . $otp,
-      'chat_id' => $query['chat_id']
-    ];
+    if ($lastCommand === '/list') {
+      $otp = generate_totp($data['secret']);
+
+      return [
+        'text' => 'Your OTP is ' . $otp,
+        'chat_id' => $query['chat_id']
+      ];
+    } elif ($lastCommand === '/export') {
+      $url = generate_url($data);
+
+      return [
+        'text' => 'Your URL is ' . $url,
+        'chat_id' => $query['chat_id']
+      ];
+    }
   }
 
   if (isMessageWithPhoto($input)) {
