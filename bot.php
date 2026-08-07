@@ -3,6 +3,7 @@
 require_once('config.php');
 require_once('message.php');
 require_once('totp.php');
+require_once('phpqrcode/lib/qrlib.php');
 
 function doCronLogic ($input) {
   //@TODO implement cron logic here, if needed
@@ -25,6 +26,10 @@ function parseQR ($filename) {
   }
 
   return null;
+}
+
+function generateQR ($filename, $data) {
+  QRcode::png($data, $filename, QR_ECLEVEL_H, 8, 2);
 }
 
 function getListKeyboardMarkup ($chatId) {
@@ -114,6 +119,9 @@ function doLogic ($input) {
       ];
     } elseif ($lastCommand === '/export') {
       $url = generate_url($data);
+      $qrFilename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/qr.png';
+      file_exists($qrFilename) && unlink($qrFilename);
+      generateQR($url, $qrFilename);
 
       return [
         'text' => 'Your URL is ' . $url,
