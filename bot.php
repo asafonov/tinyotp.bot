@@ -121,7 +121,7 @@ function doLogic ($input) {
       $url = generate_url($data);
       $qrFilename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/qr.png';
       file_exists($qrFilename) && unlink($qrFilename);
-      generateQR($url, $qrFilename);
+      generateQR($qrFilename, $url);
 
       return [
         'text' => 'Your URL is ' . $url,
