@@ -112,7 +112,7 @@ function doLogic ($input) {
         'text' => 'Your OTP is ' . $otp,
         'chat_id' => $query['chat_id']
       ];
-    } elif ($lastCommand === '/export') {
+    } elseif ($lastCommand === '/export') {
       $url = generate_url($data);
 
       return [
