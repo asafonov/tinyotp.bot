@@ -80,7 +80,7 @@ function sendMessageWithRetry ($msg) {
 }
 
 function senPhotoWithRetry ($msg) {
-  if (! file_exists($msg['photo']) {
+  if (! file_exists($msg['photo'])) {
     return false;
   }
 
