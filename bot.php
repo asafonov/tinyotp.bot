@@ -117,7 +117,7 @@ function doLogic ($input) {
         'text' => 'Your OTP is ' . $otp,
         'chat_id' => $query['chat_id']
       ];
-    } elseif ($lastCommand === '/export') {
+    } else if ($lastCommand === '/export') {
       $url = generate_url($data);
       $qrFilename = WORKER_CACHE_PATH . '/' . $query['chat_id'] . '/qr.png';
       file_exists($qrFilename) && unlink($qrFilename);
