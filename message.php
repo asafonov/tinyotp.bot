@@ -97,11 +97,11 @@ function sendPhotoWithRetry ($msg) {
   $data .= "--$boundary\r\n";
   $data .= "Content-Disposition: form-data; name=\"caption\"\r\n\r\n";
   $data .= "{$msg['caption']}\r\n";
-  $data .= "--$boundary\r\n";
+  $data .= "--$boundary--\r\n";
 
   $httpOptions = [
     'method' => 'POST',
-    'header' => 'Content-Type: multipart/form-data; boundary=' . $boundary . '\r\nContent-Length: ' . strlen($data) . "\r\n",
+    'header' => 'Content-Type: multipart/form-data; boundary=' . $boundary . "\r\nContent-Length: " . strlen($data) . "\r\n",
     'content' => $data
   ];
   $url = 'https://api.telegram.org/bot' . TOKEN . '/sendPhoto';
