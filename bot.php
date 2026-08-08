@@ -124,7 +124,8 @@ function doLogic ($input) {
       generateQR($qrFilename, $url);
 
       return [
-        'text' => 'Your URL is ' . $url,
+        'photo' => $qrFilename,
+        'caption' => 'Your URL is ' . $url,
         'chat_id' => $query['chat_id']
       ];
     }

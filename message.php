@@ -79,24 +79,24 @@ function sendMessageWithRetry ($msg) {
   return requestApiWithRetry($url, $msg);
 }
 
-function senPhotoWithRetry ($filename, $chatId, $caption) {
-  if (! file_exists($filename)) {
+function senPhotoWithRetry ($msg) {
+  if (! file_exists($msg['photo']) {
     return false;
   }
 
   $boundary = '----' . uniqid();
-  $fileData = file_get_contents($filename);
+  $fileData = file_get_contents($msg['photo']);
 
   $data = "--$boundary\r\n";
   $data .= "Content-Disposition: form-data; name=\"chat_id\"\r\n\r\n";
-  $data .= "$chatId\r\n";
+  $data .= "{$msg['chat_id']}\r\n";
   $data .= "--$boundary\r\n";
   $data .= "Content-Disposition: form-data; name=\"photo\"; filename=\"photo.png\"\r\n";
   $data .= "Content-Type: image/png\r\n\r\n";
   $data .= $fileData . "\r\n";
   $data .= "--$boundary\r\n";
   $data .= "Content-Disposition: form-data; name=\"caption\"\r\n\r\n";
-  $data .= "$caption\r\n";
+  $data .= "{$msg['caption']}\r\n";
   $data .= "--$boundary\r\n";
 
   $httpOptions = [
