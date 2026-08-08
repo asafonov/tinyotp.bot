@@ -125,7 +125,7 @@ function doLogic ($input) {
 
       return [
         'photo' => $qrFilename,
-        'caption' => 'Your URL is ' . $url,
+        'caption' => 'Your export for ' . $query['data'] . ' is ready',
         'chat_id' => $query['chat_id']
       ];
     }
