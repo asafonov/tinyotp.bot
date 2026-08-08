@@ -10,7 +10,7 @@ if (isset($argv[1]) && file_exists(WORKER_CACHE_PATH . '/' . $argv[1])) {
   $reply = doLogic($data);
 
   if (isset($reply['photo']))
-    sendPhotoWithRetry($reply)
+    sendPhotoWithRetry($reply);
   else if (isset($reply['text']))
     sendMessageWithRetry($reply);
 
