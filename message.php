@@ -101,10 +101,7 @@ function sendPhotoWithRetry ($msg) {
 
   $httpOptions = [
     'method' => 'POST',
-    'header' => [
-      'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
-      'Content-Length' => strlen($data)
-    ],
+    'header' => 'Content-Type: multipart/form-data; boundary=' . $boundary . '\r\nContent-Length:' . strlen($data) . "\r\n"
     'content' => $data
   ];
   $url = 'https://api.telegram.org/bot' . TOKEN . '/sendPhoto';
