@@ -79,7 +79,7 @@ function sendMessageWithRetry ($msg) {
   return requestApiWithRetry($url, $msg);
 }
 
-function senPhotoWithRetry ($msg) {
+function sendPhotoWithRetry ($msg) {
   if (! file_exists($msg['photo'])) {
     return false;
   }
