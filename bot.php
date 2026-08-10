@@ -74,12 +74,13 @@ function doLogic ($input) {
     ];
   }
 
-  if ($text == '/list' || $text == '/export') {
+  if ($text == '/list' || $text == '/export' || $text == '/delete') {
     saveLastCommand($text, $chatId);
     $reply_markup = getListKeyboardMarkup($chatId);
     $reply = [
       '/list' => 'Here is the list of your OTP providers',
-      '/export' => 'Select the provider to export'
+      '/export' => 'Select the provider to export',
+      '/delete' => 'Select the provider to delete. This operation is not revertable.'
     ];
 
     return [
@@ -126,6 +127,13 @@ function doLogic ($input) {
       return [
         'photo' => $qrFilename,
         'caption' => 'Your export for ' . $query['data'] . ' is ready',
+        'chat_id' => $query['chat_id']
+      ];
+    } else if ($lastCommand === '/delete') {
+      unlink($filename);
+
+      return [
+        'text' => 'Your OTP provider ' . $query['data'] . ' is deleted',
         'chat_id' => $query['chat_id']
       ];
     }
