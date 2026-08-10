@@ -152,7 +152,14 @@ function doLogic ($input) {
       $otp = generate_totp($parsed['secret']);
       $secretsDir = $saveDir . '/secrets';
       mkdir($secretsDir);
-      $key = $parsed['provider'] . (isset($parsed['username']) && $parsed['username'] ? ":{$parsed['username']}" : '');
+
+      $i = '';
+      $key = $parsed['provider'];
+
+      while (file_exists("$secretsDir/$key$i")) {
+        $i = $i ? $i + 1 : 1;
+      }
+
       file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
 
       return [
