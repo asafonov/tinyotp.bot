@@ -160,7 +160,7 @@ function doLogic ($input) {
         $i = $i ? $i + 1 : 1;
       }
 
-      file_put_contents($secretsDir . '/' . $key, json_encode($parsed));
+      file_put_contents($secretsDir . '/' . $key . $i, json_encode($parsed));
 
       return [
         'text' => 'Your confirmation code is ' . $otp,
