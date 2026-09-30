@@ -36,8 +36,11 @@ function getListKeyboardMarkup ($chatId) {
   $dir = WORKER_CACHE_PATH . '/' . $chatId . '/secrets';
   $keyboard = [];
   $files = scandir($dir);
+  $filesCount = count($files);
 
-  for ($i = 0, $j = count($files); $i < $j; ++$i) {
+  if ($filesCount === 0) return false;
+
+  for ($i = 0, $j = $filesCount; $i < $j; ++$i) {
     if ($files[$i] === '.' || $files[$i] === '..') {
       continue;
     }
@@ -77,6 +80,14 @@ function doLogic ($input) {
   if ($text == '/list' || $text == '/export' || $text == '/delete') {
     saveLastCommand($text, $chatId);
     $reply_markup = getListKeyboardMarkup($chatId);
+
+    if ($reply_markup === false) {
+      return [
+        'text' => 'You have not added any OTP providers yet.',
+        'chat_id' => $chatId
+      ];
+    }
+
     $reply = [
       '/list' => 'Here is the list of your OTP providers',
       '/export' => 'Select the provider to export',
