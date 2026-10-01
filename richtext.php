@@ -26,6 +26,19 @@ class RichText {
     return $this;
   }
 
+  function code ($text, $lang = false) {
+    $block = [
+      'type' => 'code',
+      'text' => $text
+    ];
+
+    if ($lang !== false) $block['language'] = $lang;
+
+    $this->blocks[] = $block;
+
+    return $this;
+  }
+
   function get() {
     return $this->blocks;
   }
