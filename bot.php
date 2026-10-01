@@ -4,6 +4,7 @@ require_once('config.php');
 require_once('message.php');
 require_once('totp.php');
 require_once('phpqrcode/lib/qrlib.php');
+require_once('richtext.php');
 
 function doCronLogic ($input) {
   //@TODO implement cron logic here, if needed
@@ -124,9 +125,11 @@ function doLogic ($input) {
 
     if ($lastCommand === '/list') {
       $otp = generate_totp($data['secret']);
+      $richText = new RichText();
+      $richText->p('Your OTP is ')->code($otp);
 
       return [
-        'text' => 'Your OTP is ' . $otp,
+        'rich_message' => ['blocks' => $richText->get()],
         'chat_id' => $query['chat_id']
       ];
     } else if ($lastCommand === '/export') {
@@ -172,9 +175,11 @@ function doLogic ($input) {
       }
 
       file_put_contents($secretsDir . '/' . $key . $i, json_encode($parsed));
+      $richText = new RichText();
+      $richText->p('Your confirmation code is ')->code($otp);
 
       return [
-        'text' => 'Your confirmation code is ' . $otp,
+        'rich_message' => ['blocks' => $richText->get()],
         'chat_id' => $chatId
       ];
     }

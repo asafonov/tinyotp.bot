@@ -6,6 +6,18 @@ function writeLog ($msg) {
   file_put_contents(WORKER_LOG_PATH . '/' . BOT_NAME . '.error.log', date('Y-m-d H:i:s', time()) . '   ' . "$msg\n", FILE_APPEND | LOCK_EX);
 }
 
+function saveLastCommand ($command, $chatId) {
+  file_put_contents(WORKER_CACHE_PATH . '/' . $chatId . '/last_command', $command);
+}
+
+function getLastCommand ($chatId) {
+  return file_get_contents(WORKER_CACHE_PATH . '/' . $chatId . '/last_command');
+}
+
+function emoji ($code) {
+  return mb_convert_encoding('&#x' . $code . ';', 'UTF-8', 'HTML-ENTITIES');
+}
+
 function requestApi ($url, $msg = false, $httpOptions = false) {
   $options = [
     'http' => [
@@ -18,8 +30,8 @@ function requestApi ($url, $msg = false, $httpOptions = false) {
   ];
 
   if ($msg !== false) {
-    $options['http']['header'] = "Content-type: application/x-www-form-urlencoded\r\n";
-    $options['http']['content'] = http_build_query($msg);
+    $options['http']['header'] = "Content-type: application/json\r\n";
+    $options['http']['content'] = json_encode($msg);
   }
 
   if ($httpOptions !== false) {
@@ -79,6 +91,11 @@ function sendMessageWithRetry ($msg) {
   return requestApiWithRetry($url, $msg);
 }
 
+function sendRichMessageWithRetry ($msg) {
+  $url = 'https://api.telegram.org/bot' . TOKEN . '/sendRichMessage';
+  return requestApiWithRetry($url, $msg);
+}
+
 function sendPhotoWithRetry ($msg) {
   if (! file_exists($msg['photo'])) {
     return false;
@@ -114,7 +131,7 @@ function isMessageWithPhoto ($msg) {
 }
 
 function getPhotoUrl ($msg) {
-  if (! isMessageWithPhoto($msg)) return null;
+  if (! isMessageWithPhoto($msg)) return false;
 
   $fileId = end($msg['message']['photo'])['file_id'];
   $getFileUrl = 'https://api.telegram.org/bot' . TOKEN . "/getFile?file_id={$fileId}";
@@ -125,6 +142,14 @@ function getPhotoUrl ($msg) {
   }
 
   return 'https://api.telegram.org/file/bot' . TOKEN . "/{$filePath['result']['file_path']}";
+}
+
+function getLocation ($msg) {
+  if (isset($msg['message']['location'])) {
+    return $msg['message']['location'];
+  } else {
+    return false;
+  }
 }
 
 function isCallbackQuery ($input) {
