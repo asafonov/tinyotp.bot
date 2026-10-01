@@ -32,7 +32,7 @@ class RichText {
       'text' => $text
     ];
 
-    return this->p($block);
+    return $this->p($block);
   }
 
   function get() {
