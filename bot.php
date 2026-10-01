@@ -52,14 +52,6 @@ function getListKeyboardMarkup ($chatId) {
   return json_encode(['inline_keyboard' => $keyboard]);
 }
 
-function saveLastCommand ($command, $chatId) {
-  file_put_contents(WORKER_CACHE_PATH . '/' . $chatId . '/last_command', $command);
-}
-
-function getLastCommand ($chatId) {
-  return file_get_contents(WORKER_CACHE_PATH . '/' . $chatId . '/last_command');
-}
-
 function doLogic ($input) {
   $text = $input['message']['text'];
   $chatId = $input['message']['chat']['id'];
